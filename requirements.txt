@@ -1,0 +1,2 @@
+dnspython==2.2.1
+maxminddb==2.2.0
