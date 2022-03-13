@@ -169,7 +169,7 @@ def scan_root_ca(info):
       result = subprocess.check_output(["openssl", "s_client", "-connect", host+":"+str(443)],
           timeout=2, stderr=subprocess.STDOUT, input=b'').decode("utf-8")
       if "error" not in result:
-        orgs = re.findall("O = *,", result)
+        orgs = re.findall("r'O = \.(.*?),", result)
         print(orgs)
         # beluga = result[(result.find("i:O = ")+len("i:O = ")):]
         # ca = beluga[:beluga.find("CN")-2]
