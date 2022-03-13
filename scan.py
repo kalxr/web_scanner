@@ -170,8 +170,8 @@ def scan_root_ca(info):
           timeout=2, stderr=subprocess.STDOUT, input=b'').decode("utf-8")
       if "error" not in result:
 
-        last_line = result[:result.find("Server certificate")].splitlines()[-2]
-        print(last_line)
+        truncated_result = result[result.find("Certificate chain"):result.find("Server certificate")]
+        print(truncated_result)
         # ca = re.findall(r'O = (.*?), ', result.splitlines()[-2])[0]
         # print(ca)
 
