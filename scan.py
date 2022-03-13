@@ -1,3 +1,4 @@
+import re
 import subprocess
 import dns.name, dns.resolver, dns.reversename
 import json
@@ -159,6 +160,8 @@ def scan_tls_versions(info):
     except subprocess.TimeoutExpired:
       # print("scan_tls_versions timeout for " + host)
       continue
+    except Exception:
+      continue
 
 def scan_root_ca(info):
   for host in info:
@@ -166,16 +169,19 @@ def scan_root_ca(info):
       result = subprocess.check_output(["openssl", "s_client", "-connect", host+":"+str(443)],
           timeout=2, stderr=subprocess.STDOUT, input=b'').decode("utf-8")
       if "error" not in result:
+        orgs = re.findall("O = *,", result)
         print(result)
-        beluga = result[(result.find("i:O = ")+len("i:O = ")):]
-        ca = beluga[:beluga.find("CN")-2]
-        info[host]["scan_root_ca"] = ca
+        # beluga = result[(result.find("i:O = ")+len("i:O = ")):]
+        # ca = beluga[:beluga.find("CN")-2]
+        # info[host]["scan_root_ca"] = ca
 
     except FileNotFoundError:
       print("needed program not found, skipping scan_root_ca", file=sys.stderr)
       return
     except subprocess.TimeoutExpired:
       # print("scan_root_ca timeout for " + host)
+      continue
+    except Exception:
       continue
 
 def scan_rdns_names(info):
