@@ -200,7 +200,7 @@ def scan_root_ca(info):
       print("needed program not found, skipping scan_root_ca", file=sys.stderr)
       return
     except subprocess.TimeoutExpired:
-      # print("scan_root_ca timeout for " + host)
+      print("scan_root_ca timeout for " + host)
       continue
     except Exception as e:
       print(e)
