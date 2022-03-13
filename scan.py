@@ -196,13 +196,14 @@ def scan_root_ca(info):
         # ca = beluga[:beluga.find("CN")-2]
         info[host]["scan_root_ca"] = ca
       else:
-        print("error in openssl for " + host)
+        # print("error in openssl for " + host)
+        info[host]["scan_root_ca"] = None
 
     except FileNotFoundError:
       print("needed program not found, skipping scan_root_ca", file=sys.stderr)
       return
     except subprocess.TimeoutExpired:
-      print("scan_root_ca timeout for " + host)
+      # print("scan_root_ca timeout for " + host)
       continue
     except Exception as e:
       print(e)
