@@ -169,7 +169,7 @@ def scan_root_ca(info):
       result = subprocess.check_output(["openssl", "s_client", "-connect", host+":"+str(443)],
           timeout=2, stderr=subprocess.STDOUT, input=b'').decode("utf-8")
       if "error" not in result:
-        result = result[:result.find("Server Certificate")]
+        result = result[:result.find("Server certificate")]
         print(result)
         orgs = re.findall(r'O = (.*?),', result)
         print(orgs)
