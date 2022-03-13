@@ -148,8 +148,8 @@ def scan_tls_versions(info):
           timeout=8, stderr=subprocess.STDOUT).decode("utf-8")
       info[host]["tls_versions"] = [option for option in TLS_OPTIONS if option in result]
 
-      result = subprocess.check_output(["echo", "|", "openssl", "s_client", "tls1_3", "-connect", host+":"+str(443)],
-          timeout=2, stderr=subprocess.STDOUT).decode("utf-8")
+      result = subprocess.check_output(["openssl", "s_client", "tls1_3", "-connect", host+":"+str(443)],
+          timeout=2, stderr=subprocess.STDOUT, input=b'').decode("utf-8")
       if "error" not in result:
         info[host]["tls_versions"].append("TLSv1.3")
 
@@ -163,8 +163,8 @@ def scan_tls_versions(info):
 def scan_root_ca(info):
   for host in info:
     try:
-      result = subprocess.check_output(["echo", "|", "openssl", "s_client", "-connect", host+":"+str(443)],
-          timeout=2, stderr=subprocess.STDOUT).decode("utf-8")
+      result = subprocess.check_output(["openssl", "s_client", "-connect", host+":"+str(443)],
+          timeout=2, stderr=subprocess.STDOUT, input=b'').decode("utf-8")
       if "error" not in result:
         print(result)
         beluga = result[(result.find("i:O = ")+len("i:O = ")):]
