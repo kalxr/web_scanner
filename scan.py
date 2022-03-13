@@ -143,7 +143,7 @@ def scan_tls_versions(info):
   for host in info:
     try:
       result = subprocess.check_output(["nmap", "--script", "ssl-enum-ciphers", "-p", "443", host],
-          timeout=2, stderr=subprocess.STDOUT).decode("utf-8")
+          timeout=8, stderr=subprocess.STDOUT).decode("utf-8")
       info[host]["tls_versions"] = [option for option in TLS_OPTIONS if option in result]
 
       result = subprocess.check_output(["openssl", "s_client", "tls1_3", "-connect", host+":"+str(443)],
