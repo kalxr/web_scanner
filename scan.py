@@ -168,7 +168,7 @@ def scan_root_ca(info):
       if "error" not in result:
         beluga = result[(result.find("i:O = ")+len("i:O = ")):]
         ca = beluga[:beluga.find("CN")-2]
-        info[host]["scan_root_ca"] = beluga
+        info[host]["scan_root_ca"] = ca
 
     except FileNotFoundError:
       print("needed program not found, skipping scan_root_ca", file=sys.stderr)
