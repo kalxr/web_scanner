@@ -175,14 +175,16 @@ def scan_root_ca(info):
         truncated_result_lines = truncated_result.splitlines()
         relevant_line = truncated_result_lines[-2]
         truncated_relevant_line = relevant_line[relevant_line.find("O ="):]
-        print(truncated_relevant_line)
+        # print(truncated_relevant_line)
 
         ca = re.findall(r'O = (.*?), ', truncated_relevant_line)[0]
         if "\"" in ca:
           start = truncated_relevant_line.find("\"")
           end = truncated_relevant_line.find("\"", start+1)
           ca = truncated_relevant_line[start+1:end]
-        print(ca)
+
+        print("Host: " + host)
+        print("Root CA: " + ca)
 
         # result = result[:result.find("Server certificate")]
         # print(result)
