@@ -149,6 +149,8 @@ def scan_tls_versions(info):
     except FileNotFoundError:
       print("nmap not found, skipping scan_tls_versions", file=sys.stderr)
       return
+    except subprocess.TimeoutExpired:
+      print("nmap timeout for " + host)
 
 def scan_root_ca(info):
   pass
