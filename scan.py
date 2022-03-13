@@ -172,7 +172,7 @@ def scan_root_ca(info):
 
         result = result[:result.find("Server certificate")]
         print(result)
-        ca = re.findall(r'O = (.*?),', result.splitlines()[0])[-2]
+        ca = re.findall(r'O = (.*?),', result.splitlines()[0])[-3]
         print(ca)
 
         # result = result[:result.find("Server certificate")]
