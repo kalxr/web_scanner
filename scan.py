@@ -169,13 +169,19 @@ def scan_root_ca(info):
       result = subprocess.check_output(["openssl", "s_client", "-connect", host+":"+str(443)],
           timeout=2, stderr=subprocess.STDOUT, input=b'').decode("utf-8")
       if "error" not in result:
-        result = result[:result.find("Server certificate")]
-        print(result)
-        orgs = re.findall(r'O = (.*?),', result)
-        print(orgs)
+
+        ca = re.findall(r'O = (.*?),', result.splitlines()[0])[0]
+        print(ca)
+
+        # result = result[:result.find("Server certificate")]
+        # print(result)
+        # orgs = re.findall(r'O = (.*?),', result)
+        # print(orgs)
+
+
         # beluga = result[(result.find("i:O = ")+len("i:O = ")):]
         # ca = beluga[:beluga.find("CN")-2]
-        # info[host]["scan_root_ca"] = ca
+        info[host]["scan_root_ca"] = ca
 
     except FileNotFoundError:
       print("needed program not found, skipping scan_root_ca", file=sys.stderr)
