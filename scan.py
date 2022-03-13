@@ -166,6 +166,7 @@ def scan_root_ca(info):
       result = subprocess.check_output(["echo", "|", "openssl", "s_client", "-connect", host+":"+str(443)],
           timeout=2, stderr=subprocess.STDOUT).decode("utf-8")
       if "error" not in result:
+        print(result)
         beluga = result[(result.find("i:O = ")+len("i:O = ")):]
         ca = beluga[:beluga.find("CN")-2]
         info[host]["scan_root_ca"] = ca
