@@ -171,6 +171,7 @@ def scan_root_ca(info):
       if "error" not in result:
 
         result = result[:result.find("Server certificate")]
+        print(result)
         ca = re.findall(r'O = (.*?),', result.splitlines()[0])[-2]
         print(ca)
 
