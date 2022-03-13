@@ -167,7 +167,7 @@ def scan_root_ca(info):
   for host in info:
     try:
       result = subprocess.check_output(["openssl", "s_client", "-connect", host+":"+str(443)],
-          timeout=2, stderr=subprocess.STDOUT, input=b'').decode("utf-8")
+          timeout=4, stderr=subprocess.STDOUT, input=b'').decode("utf-8")
 
       truncated_result = result[result.find("Certificate chain"):result.find("Server certificate")]
       truncated_result_lines = truncated_result.splitlines()
@@ -181,8 +181,8 @@ def scan_root_ca(info):
         end = truncated_relevant_line.find("\"", start+1)
         ca = truncated_relevant_line[start+1:end]
 
-      print("Host: " + host)
-      print("Root CA: " + ca)
+      # print("Host: " + host)
+      # print("Root CA: " + ca)
 
       # result = result[:result.find("Server certificate")]
       # print(result)
@@ -279,17 +279,17 @@ def scan_geo_locations(info):
 
 
 def scan(info):
-  # scan_ipv4(info)
-  # scan_ipv6(info)
-  # scan_http_server(info)
-  # scan_insecure_http(info)
-  # scan_redirect_to_https(info)
-  # scan_hsts(info)
-  # scan_tls_versions(info)
+  scan_ipv4(info)
+  scan_ipv6(info)
+  scan_http_server(info)
+  scan_insecure_http(info)
+  scan_redirect_to_https(info)
+  scan_hsts(info)
+  scan_tls_versions(info)
   scan_root_ca(info)
-  # scan_rdns_names(info)
-  # scan_rtt_range(info)
-  # scan_geo_locations(info)
+  scan_rdns_names(info)
+  scan_rtt_range(info)
+  scan_geo_locations(info)
 
 def main():
     if len(sys.argv) != 3:
