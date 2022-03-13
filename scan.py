@@ -171,7 +171,14 @@ def scan_root_ca(info):
       if "error" not in result:
 
         truncated_result = result[result.find("Certificate chain"):result.find("Server certificate")]
-        print(truncated_result)
+        # print(truncated_result)
+
+        truncated_result_lines = truncated_result.splitlines()
+        relevant_line_1 = truncated_result_lines[-3]
+        relevant_line_2 = truncated_result_lines[-2]
+        print(relevant_line_1)
+        print(relevant_line_2)
+
         # ca = re.findall(r'O = (.*?), ', result.splitlines()[-2])[0]
         # print(ca)
 
@@ -183,7 +190,7 @@ def scan_root_ca(info):
 
         # beluga = result[(result.find("i:O = ")+len("i:O = ")):]
         # ca = beluga[:beluga.find("CN")-2]
-        info[host]["scan_root_ca"] = ca
+        # info[host]["scan_root_ca"] = ca
 
     except FileNotFoundError:
       print("needed program not found, skipping scan_root_ca", file=sys.stderr)
