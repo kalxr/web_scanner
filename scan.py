@@ -243,7 +243,7 @@ def scan_rtt_range(info):
           after = time.perf_counter()
           if err:
             continue
-          this_time = round((after-start) * 1000 - adjustment)
+          this_time = round((after-start) * 1000 - adjustment, 2)
           mi = min(this_time, mi) if mi else this_time
           ma = max(this_time, ma) if ma else this_time
     info[host]["rtt_range"] = [mi, ma]
