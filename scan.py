@@ -170,7 +170,7 @@ def scan_root_ca(info):
           timeout=2, stderr=subprocess.STDOUT, input=b'').decode("utf-8")
       if "error" not in result:
         orgs = re.findall("O = *,", result)
-        print(result)
+        print(orgs)
         # beluga = result[(result.find("i:O = ")+len("i:O = ")):]
         # ca = beluga[:beluga.find("CN")-2]
         # info[host]["scan_root_ca"] = ca
