@@ -225,11 +225,11 @@ def scan_rdns_names(info):
 
 def scan_rtt_range(info):
   adjustment = 0
-  with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    start = time.perf_counter()          
-    err = s.connect_ex(("127.0.0.1", 22))
-    after = time.perf_counter()
-    adjustment = (after-start) * 1000
+  # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+  #   start = time.perf_counter()          
+  #   err = s.connect_ex(("127.0.0.1", 22))
+  #   after = time.perf_counter()
+  #   adjustment = (after-start) * 1000
 
   for host in info:
     mi = None
