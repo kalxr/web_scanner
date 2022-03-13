@@ -226,10 +226,10 @@ def scan_rdns_names(info):
 def scan_rtt_range(info):
   adjustment = 0
   with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    start = time.time_ns()          
+    start = time.perf_counter()          
     err = s.connect_ex(("127.0.0.1", 22))
-    after = time.time_ns()
-    adjustment = (after-start) / 1000000
+    after = time.perf_counter()
+    adjustment = (after-start) * 1000
 
   for host in info:
     mi = None
@@ -238,12 +238,12 @@ def scan_rtt_range(info):
       for port in [80, 22, 443]:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
           s.settimeout(1)
-          start = time.perf_counter_ns()          
+          start = time.perf_counter()          
           err = s.connect_ex((ip, port))
-          after = time.perf_counter_ns()
+          after = time.perf_counter()
           if err:
             continue
-          this_time = round((after-start) / 1000000 - adjustment)
+          this_time = round((after-start) * 1000 - adjustment)
           mi = min(this_time, mi) if mi else this_time
           ma = max(this_time, ma) if ma else this_time
     info[host]["rtt_range"] = [mi, ma]
