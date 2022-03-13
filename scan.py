@@ -172,11 +172,10 @@ def scan_root_ca(info):
 
 
         truncated_result = result[result.find("Certificate chain"):result.find("Server certificate")]
-        # print(truncated_result)
-
         truncated_result_lines = truncated_result.splitlines()
         relevant_line = truncated_result_lines[-2]
-        print(relevant_line)
+        truncated_relevant_line = relevant_line[relevant_line.find("O ="):]
+        print(truncated_relevant_line)
 
         # ca = re.findall(r'O = (.*?), ', result.splitlines()[-2])[0]
         # print(ca)
