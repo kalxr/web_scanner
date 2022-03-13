@@ -142,6 +142,8 @@ def scan_hsts(info):
 def scan_tls_versions(info):
   for host in info:
     try:
+      # may need to raise timeouts on these for some domains
+
       result = subprocess.check_output(["nmap", "--script", "ssl-enum-ciphers", "-p", "443", host],
           timeout=8, stderr=subprocess.STDOUT).decode("utf-8")
       info[host]["tls_versions"] = [option for option in TLS_OPTIONS if option in result]
@@ -155,11 +157,25 @@ def scan_tls_versions(info):
       print("needed program not found, skipping scan_tls_versions", file=sys.stderr)
       return
     except subprocess.TimeoutExpired:
-      # print("nmap timeout for " + host)
+      # print("scan_tls_versions timeout for " + host)
       continue
 
 def scan_root_ca(info):
-  pass
+  for host in info:
+    try:
+      result = subprocess.check_output(["echo", "|", "openssl", "s_client", "-connect", host+":"+str(443)],
+          timeout=2, stderr=subprocess.STDOUT).decode("utf-8")
+      if "error" not in result:
+        beluga = result[(result.find("i:O = ")+len("i:O = ")):]
+        ca = beluga[:beluga.find("CN")-2]
+        info[host]["scan_root_ca"] = beluga
+
+    except FileNotFoundError:
+      print("needed program not found, skipping scan_root_ca", file=sys.stderr)
+      return
+    except subprocess.TimeoutExpired:
+      # print("scan_root_ca timeout for " + host)
+      continue
 
 def scan_rdns_names(info):
   resolver = dns.resolver.Resolver(configure=False)
@@ -240,8 +256,8 @@ def scan(info):
   # scan_insecure_http(info)
   # scan_redirect_to_https(info)
   # scan_hsts(info)
-  scan_tls_versions(info)
-  # scan_root_ca(info)
+  # scan_tls_versions(info)
+  scan_root_ca(info)
   # scan_rdns_names(info)
   # scan_rtt_range(info)
   # scan_geo_locations(info)
