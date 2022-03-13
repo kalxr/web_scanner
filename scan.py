@@ -191,7 +191,8 @@ def scan_root_ca(info):
     except subprocess.TimeoutExpired:
       # print("scan_root_ca timeout for " + host)
       continue
-    except Exception:
+    except Exception as e:
+      print(e)
       continue
 
 def scan_rdns_names(info):
