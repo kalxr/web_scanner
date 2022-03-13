@@ -172,7 +172,7 @@ def scan_root_ca(info):
 
 
         truncated_result = result[result.find("Certificate chain"):result.find("Server certificate")]
-        print(truncated_result)
+        # print(truncated_result)
 
         truncated_result_lines = truncated_result.splitlines()
         relevant_line = truncated_result_lines[-2]
