@@ -168,45 +168,42 @@ def scan_root_ca(info):
     try:
       result = subprocess.check_output(["openssl", "s_client", "-connect", host+":"+str(443)],
           timeout=2, stderr=subprocess.STDOUT, input=b'').decode("utf-8")
-      if "error" not in result:
+
+      truncated_result = result[result.find("Certificate chain"):result.find("Server certificate")]
+      truncated_result_lines = truncated_result.splitlines()
+      relevant_line = truncated_result_lines[-2]
+      truncated_relevant_line = relevant_line[relevant_line.find("O ="):]
+      # print(truncated_relevant_line)
+
+      ca = re.findall(r'O = (.*?), ', truncated_relevant_line)[0]
+      if "\"" in ca:
+        start = truncated_relevant_line.find("\"")
+        end = truncated_relevant_line.find("\"", start+1)
+        ca = truncated_relevant_line[start+1:end]
+
+      print("Host: " + host)
+      print("Root CA: " + ca)
+
+      # result = result[:result.find("Server certificate")]
+      # print(result)
+      # orgs = re.findall(r'O = (.*?),', result)
+      # print(orgs)
 
 
-        truncated_result = result[result.find("Certificate chain"):result.find("Server certificate")]
-        truncated_result_lines = truncated_result.splitlines()
-        relevant_line = truncated_result_lines[-2]
-        truncated_relevant_line = relevant_line[relevant_line.find("O ="):]
-        # print(truncated_relevant_line)
-
-        ca = re.findall(r'O = (.*?), ', truncated_relevant_line)[0]
-        if "\"" in ca:
-          start = truncated_relevant_line.find("\"")
-          end = truncated_relevant_line.find("\"", start+1)
-          ca = truncated_relevant_line[start+1:end]
-
-        print("Host: " + host)
-        print("Root CA: " + ca)
-
-        # result = result[:result.find("Server certificate")]
-        # print(result)
-        # orgs = re.findall(r'O = (.*?),', result)
-        # print(orgs)
-
-
-        # beluga = result[(result.find("i:O = ")+len("i:O = ")):]
-        # ca = beluga[:beluga.find("CN")-2]
-        info[host]["scan_root_ca"] = ca
-      else:
-        # print("error in openssl for " + host)
-        info[host]["scan_root_ca"] = None
+      # beluga = result[(result.find("i:O = ")+len("i:O = ")):]
+      # ca = beluga[:beluga.find("CN")-2]
+      info[host]["scan_root_ca"] = ca
 
     except FileNotFoundError:
       print("needed program not found, skipping scan_root_ca", file=sys.stderr)
       return
     except subprocess.TimeoutExpired:
       # print("scan_root_ca timeout for " + host)
+      info[host]["scan_root_ca"] = None
       continue
     except Exception as e:
-      print(e)
+      # print(e)
+      info[host]["scan_root_ca"] = None
       continue
 
 def scan_rdns_names(info):
