@@ -146,11 +146,17 @@ def scan_tls_versions(info):
           timeout=2, stderr=subprocess.STDOUT).decode("utf-8")
       info[host]["tls_versions"] = [option for option in TLS_OPTIONS if option in result]
 
+      result = subprocess.check_output(["openssl", "s_client", "tls1_3", "-connect", host+":"+str(443)],
+          timeout=2, stderr=subprocess.STDOUT).decode("utf-8")
+      if error not in result:
+        info[host]["tls_versions"].append("TLSv1.3")
+
     except FileNotFoundError:
-      print("nmap not found, skipping scan_tls_versions", file=sys.stderr)
+      print("needed program not found, skipping scan_tls_versions", file=sys.stderr)
       return
     except subprocess.TimeoutExpired:
-      print("nmap timeout for " + host)
+      # print("nmap timeout for " + host)
+      continue
 
 def scan_root_ca(info):
   pass
