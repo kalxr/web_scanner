@@ -280,14 +280,14 @@ def scan_geo_locations(info):
 
 def scan(info):
   scan_ipv4(info)
-  # scan_ipv6(info)
-  # scan_http_server(info)
-  # scan_insecure_http(info)
-  # scan_redirect_to_https(info)
-  # scan_hsts(info)
-  # scan_tls_versions(info)
-  # scan_root_ca(info)
-  # scan_rdns_names(info)
+  scan_ipv6(info)
+  scan_http_server(info)
+  scan_insecure_http(info)
+  scan_redirect_to_https(info)
+  scan_hsts(info)
+  scan_tls_versions(info)
+  scan_root_ca(info)
+  scan_rdns_names(info)
   scan_rtt_range(info)
   scan_geo_locations(info)
 
