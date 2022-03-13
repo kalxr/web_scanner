@@ -1,3 +1,4 @@
+import subprocess
 import dns.name, dns.resolver, dns.reversename
 import json
 import sys
@@ -20,6 +21,15 @@ PUBLIC_DNS_RESOLVERS = [
   "198.101.242.72",
   "176.103.130.130"
   ]
+
+TLS_OPTIONS = [
+  "SSLv2",
+  "SSLv3",
+  "TLSv1.0",
+  "TLSv1.1",
+  "TLSv1.2",
+  "TLSv1.3"
+]
 
 maxmind_path = "GeoLite2-City.mmdb"
 
@@ -130,7 +140,15 @@ def scan_hsts(info):
         break
 
 def scan_tls_versions(info):
-  pass
+  for host in info:
+    try:
+      result = subprocess.check_output(["nmap", "--script", "ssl-enum-ciphers", "-p", "443", host],
+          timeout=2, stderr=subprocess.STDOUT).decode("utf-8")
+      info[host]["tls_versions"] = [option for option in TLS_OPTIONS if option in result]
+
+    except FileNotFoundError:
+      print("nmap not found, skipping scan_tls_versions", file=sys.stderr)
+      return
 
 def scan_root_ca(info):
   pass
@@ -199,6 +217,8 @@ def scan_geo_locations(info):
         if "city" in record:
           city = record["city"]["names"]["en"]
           # print(city)
+        if not (country and city and province):
+          continue
         location_record = ((city + ", ") if city else "") + ((province + ", ") if province else "") + (country if country else "")
         if location_record and location_record not in info[host]["geo_locations"]:
           info[host]["geo_locations"].append(location_record)
@@ -206,17 +226,17 @@ def scan_geo_locations(info):
 
 
 def scan(info):
-  scan_ipv4(info)
-  scan_ipv6(info)
-  scan_http_server(info)
-  scan_insecure_http(info)
-  scan_redirect_to_https(info)
-  scan_hsts(info)
+  # scan_ipv4(info)
+  # scan_ipv6(info)
+  # scan_http_server(info)
+  # scan_insecure_http(info)
+  # scan_redirect_to_https(info)
+  # scan_hsts(info)
   scan_tls_versions(info)
-  scan_root_ca(info)
-  scan_rdns_names(info)
-  scan_rtt_range(info)
-  scan_geo_locations(info)
+  # scan_root_ca(info)
+  # scan_rdns_names(info)
+  # scan_rtt_range(info)
+  # scan_geo_locations(info)
 
 def main():
     if len(sys.argv) != 3:
