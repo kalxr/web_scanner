@@ -142,6 +142,7 @@ def scan_hsts(info):
 
 def scan_tls_versions(info):
   for host in info:
+    info[host]["tls_versions"] = []
     try:
       # may need to raise timeouts on these for some domains
 
@@ -181,17 +182,6 @@ def scan_root_ca(info):
         end = truncated_relevant_line.find("\"", start+1)
         ca = truncated_relevant_line[start+1:end]
 
-      # print("Host: " + host)
-      # print("Root CA: " + ca)
-
-      # result = result[:result.find("Server certificate")]
-      # print(result)
-      # orgs = re.findall(r'O = (.*?),', result)
-      # print(orgs)
-
-
-      # beluga = result[(result.find("i:O = ")+len("i:O = ")):]
-      # ca = beluga[:beluga.find("CN")-2]
       info[host]["scan_root_ca"] = ca
 
     except FileNotFoundError:
